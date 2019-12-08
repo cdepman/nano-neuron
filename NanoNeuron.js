@@ -40,7 +40,7 @@ function generateDataSets() {
   // yTrain -> [32, 33.8, 35.6, ...]
   const xTrain = [];
   const yTrain = [];
-  for (let x = 0; x < 100; x += 1) {
+  for (let x = 0; x < 100; x++) {
     const y = celsiusToFahrenheit(x);
     xTrain.push(x);
     yTrain.push(y);
@@ -56,7 +56,7 @@ function generateDataSets() {
   const yTest = [];
   // By starting from 0.5 and using the same step of 1 as we have used for training set
   // we make sure that test set has different data comparing to training set.
-  for (let x = 0.5; x < 100; x += 1) {
+  for (let x = 0.5; x < 100; x++) {
     const y = celsiusToFahrenheit(x);
     xTest.push(x);
     yTest.push(y);
@@ -79,7 +79,7 @@ function predictionCost(y, prediction) {
 // This function takes all examples from training sets xTrain and yTrain and calculates
 // model predictions for each example from xTrain.
 // Along the way it also calculates the prediction cost (average error our NanoNeuron made while predicting).
-function forwardPropagation(model, xTrain, yTrain) {
+function forwardPropagation(xTrain, yTrain) {
   const m = xTrain.length;
   const predictions = [];
   let cost = 0;
@@ -128,7 +128,7 @@ function backwardPropagation(predictions, xTrain, yTrain) {
 // - it will push our kid to learn harder (faster) by using a learning rate parameter 'alpha'
 //   (the harder the push the faster our "nano-kid" will learn but if the teacher will push too hard 
 //    the "kid" will have a nervous breakdown and won't be able to learn anything).
-function trainModel({model, epochs, alpha, xTrain, yTrain}) {
+function trainModel({epochs, alpha, xTrain, yTrain}) {
   // The is the history array of how NanoNeuron learns.
   // It might have a good or bad "marks" (costs) during the learning process.
   const costHistory = [];
@@ -138,7 +138,7 @@ function trainModel({model, epochs, alpha, xTrain, yTrain}) {
     // Forward propagation for all training examples.
     // Let's save the cost for current iteration.
     // This will help us to analyse how our model learns.
-    const [predictions, cost] = forwardPropagation(model, xTrain, yTrain);
+    const [predictions, cost] = forwardPropagation(xTrain, yTrain);
     costHistory.push(cost);
   
     // Backward propagation. Let's learn some lessons from the mistakes.
@@ -172,7 +172,7 @@ const [xTrain, yTrain, xTest, yTest] = generateDataSets();
 // You can play with these parameters, they are being defined empirically.
 const epochs = 70000;
 const alpha = 0.0005;
-const trainingCostHistory = trainModel({model: nanoNeuron, epochs, alpha, xTrain, yTrain});
+const trainingCostHistory = trainModel({epochs, alpha, xTrain, yTrain});
 
 // Let's check how the cost function was changing during the training.
 // We're expecting that the cost after the training should be much lower than before.
@@ -188,7 +188,7 @@ console.log('NanoNeuron parameters:', {w: nanoNeuron.w, b: nanoNeuron.b}); // i.
 // Evaluate our model accuracy for test data-set to see how well our NanoNeuron deals with new unknown data predictions.
 // The cost of predictions on test sets is expected to be be close to the training cost.
 // This would mean that NanoNeuron performs well on known and unknown data.
-[testPredictions, testCost] = forwardPropagation(nanoNeuron, xTest, yTest);
+[testPredictions, testCost] = forwardPropagation(xTest, yTest);
 console.log('Cost on new testing data:', testCost); // i.e. -> 0.0000023
 
 // Now, since we see that our NanoNeuron "kid" has performed well in the "school" during the training
